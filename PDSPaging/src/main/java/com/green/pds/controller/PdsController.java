@@ -95,15 +95,15 @@ public class PdsController {
 	}
 	
 	// 자료실 새글 쓰기
-	// /Pds/WriteForm?menu_id=MENU01&bnum=0&lvl=0&step=0&nref=0&nowpage=           // 새글
-	// /Pds/WriteForm?menu_id=MENU03&idx=19&bnum=19&lvl=0&step=0&nref=19&nowpage=  // 답글
+	// /Pds/WriteForm?menu_id=MENU01&bnum=0&lvl=0&step=0&nref=0&nowpage=2           // 새글
+	// /Pds/WriteForm?menu_id=MENU03&idx=19&bnum=19&lvl=0&step=0&nref=19&nowpage=2  // 답글
 	@RequestMapping("/WriteForm")
 	public  ModelAndView   writeForm(  
 		@RequestParam  HashMap<String, Object> map	) {
 
 		// System.out.println( "contr writeForm map:" + map );
-		// contr writeForm map:{menu_id=MENU01, bnum=0, lvl=0, step=0, nref=0} : 새글
-		// contr writeForm map:{menu_id=MENU01, bnum=7, lvl=1, step=1, nref=7, idx=7} : 답글
+		// map:{menu_id=MENU01, bnum=0, lvl=0, step=0, nref=0, nowpage=2} : 새글
+		// map:{menu_id=MENU01, bnum=7, lvl=1, step=1, nref=7, idx=7, nowpage=2} : 답글
 		
 		// 메뉴 목록
 		List<MenuVo>  menuList  =  menuService.getMenuList();
@@ -112,8 +112,8 @@ public class PdsController {
 		String        menuname  =  menuService.getMenuName(menu_id);
 		map.put("menuname", menuname);
 		
-		// idx 없으면 null
-		//     있으면 숫자 27 
+		// idx 없으면 null      : 새글
+		//     있으면 숫자 27   : 답글
 		int      idx    = 0;
 		PdsVo    pdsVo  = null;
 		if( map.get("idx") != null  ) {
@@ -178,7 +178,7 @@ public class PdsController {
 	}
 	
 	// 내용보기
-	// /Pds/View?menu_id=MENU03&idx=15
+	// /Pds/View?menu_id=MENU03&idx=15&nowpage=1
 	@RequestMapping("/View")
 	public   ModelAndView   view( 
 		@RequestParam HashMap< String, Object >  map	
@@ -186,11 +186,9 @@ public class PdsController {
 		
 		// 메뉴 리스트
 		List<MenuVo>   menulist  =  menuService.getMenuList();
-		
-		// 조회수 증가 (readcount++)  -> dao 로 이동		
-		
+			
 		// 보여줄 게시글 내용
-		PdsVo          pdsVo     =  pdsService.getPds(map);           // idx		
+		PdsVo          pdsVo     =  pdsService.getPds(map);      // idx		
 		// System.out.println("/VIEW pdsVo:" + pdsVo);
 		// 게시글의 내용중 <textarea> 안의 엔터키는 -> \n
 		// 화면에 출력 <td><div> 줄바꿈 <br>
@@ -202,6 +200,11 @@ public class PdsController {
 		// 파일정보목록 
 		List<FilesVo>  fileList  =  pdsService.getFileList( map );    // idx
 		// System.out.println( fileList  );
+		
+		// 메뉴이름
+		String  menu_id   =  (String) map.get("menu_id");
+		String  menuname  =  menuService.getMenuName(menu_id);
+		map.put("menuname",  menuname);
 		
 		ModelAndView  mv  =  new ModelAndView();
 		mv.setViewName( "pds/view" );     //  pds/view.jsp
