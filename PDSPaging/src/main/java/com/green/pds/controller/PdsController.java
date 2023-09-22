@@ -245,6 +245,7 @@ public class PdsController {
 	
 	//--------------------------------------
 	// 수정
+	// /Pds/UpdateForm?menu_id=MENU01&idx=41&nowpage=1
 	@RequestMapping("/UpdateForm")
 	public   ModelAndView   updateForm(
 		@RequestParam	HashMap<String, Object>  map
